@@ -1,10 +1,8 @@
 package main
 
 import (
-	"context"
 	"log"
-	"net"
-	"time"
+	"net/rpc"
 )
 
 type Client struct {
@@ -16,18 +14,20 @@ func NewClient(port string) *Client {
 }
 
 func (c *Client) Do(cmd string) error {
-	var d net.Dialer
-	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
-	defer cancel()
-
 	log.Printf("Connecting to %s", c.Addr)
-	conn, err := d.DialContext(ctx, "tcp", c.Addr)
+	client, err := rpc.Dial("tcp", c.Addr)
 	if err != nil {
-		log.Fatalf("Failed to dial: %v", err)
+		return err
 	}
-	defer conn.Close()
+	defer client.Close()
 
-	log.Printf("=> %s", cmd)
-	_, err = conn.Write([]byte(cmd + "\n"))
-	return err
+	log.Printf("-> %s", cmd)
+	resp := new(Response)
+	call := client.Go("queue.Execute", &Request{Item: cmd}, resp, nil)
+	reply := <-call.Done
+	if reply.Error != nil {
+		return reply.Error
+	}
+	log.Printf("<- %s", resp.Message)
+	return nil
 }

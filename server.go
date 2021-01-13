@@ -1,42 +1,41 @@
 package main
 
 import (
-	"bufio"
+	"errors"
 	"log"
 	"net"
-	"time"
+	"net/rpc"
 )
+
+type Request struct {
+	Item string
+}
+
+type Response struct {
+	Message string
+}
+
+type Handler struct{}
+
+func (h *Handler) Execute(req Request, resp *Response) error {
+	if req.Item == "" {
+		return errors.New("An item must be specified")
+	}
+
+	log.Printf("put item %q on queue", req.Item)
+
+	resp.Message = "ok"
+	return nil
+}
 
 type Server struct {
 	Addr string
 }
 
 func NewServer(port string) *Server {
+	rpc.RegisterName("queue", &Handler{})
+
 	return &Server{Addr: ":" + port}
-}
-
-func (s *Server) Handler(conn net.Conn) {
-	log.Println("New connection")
-
-	defer func() {
-		log.Println("Closing connection")
-		conn.Close()
-	}()
-
-	timeoutDuration := 5 * time.Second
-	reader := bufio.NewReader(conn)
-
-	for {
-		conn.SetReadDeadline(time.Now().Add(timeoutDuration))
-
-		bytes, err := reader.ReadBytes('\n')
-		if err != nil {
-			log.Println(err)
-			return
-		}
-
-		log.Printf("%s", bytes)
-	}
 }
 
 func (s *Server) ListenAndServe() error {
@@ -51,14 +50,6 @@ func (s *Server) ListenAndServe() error {
 		log.Println("Listener closed, shutting down the server")
 	}()
 
-	var e error
-	for {
-		conn, err := listener.Accept()
-		if err != nil {
-			e = err
-			break
-		}
-		go s.Handler(conn)
-	}
-	return e
+	rpc.Accept(listener)
+	return nil
 }
