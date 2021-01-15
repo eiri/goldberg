@@ -10,6 +10,11 @@ $(PROJ): $(SRCS)
 run: $(PROJ)
 	$(CURDIR)/$(PROJ) --server
 
+.PHONY: test
+test:
+	go test -v -race ./...
+
+
 .PHONY: clean
 clean:
 	go clean
