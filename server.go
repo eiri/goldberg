@@ -30,12 +30,14 @@ func (h *Handler) Execute(req Request, resp *Response) error {
 
 type Server struct {
 	Addr string
+	*rpc.Server
 }
 
 func NewServer(port string) *Server {
-	rpc.RegisterName("queue", &Handler{})
+	s := rpc.NewServer()
+	s.RegisterName("queue", &Handler{})
 
-	return &Server{Addr: ":" + port}
+	return &Server{":" + port, s}
 }
 
 func (s *Server) ListenAndServe() error {
@@ -50,6 +52,12 @@ func (s *Server) ListenAndServe() error {
 		log.Println("Listener closed, shutting down the server")
 	}()
 
-	rpc.Accept(listener)
+	for {
+		conn, err := listener.Accept()
+		if err != nil {
+			return err
+		}
+		go s.ServeConn(conn)
+	}
 	return nil
 }
