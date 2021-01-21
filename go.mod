@@ -1,3 +1,3 @@
-module github.com/eiri/rube-goldberg-queue
+module github.com/eiri/goldberg
 
 go 1.15
