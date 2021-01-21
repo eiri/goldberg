@@ -29,4 +29,4 @@ $ ./goldberg -cmd 'ohai!'
 
 ## License
 
-[MIT](https://github.com/eiri/rube-goldberg-queue/blob/main/LICENSE)
+[Apache 2.0](https://github.com/eiri/rube-goldberg-queue/blob/main/LICENSE)
