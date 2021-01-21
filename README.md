@@ -4,11 +4,11 @@ Ridiculously over-engineered in-memory queue
 
 ## About
 
-Goldberg is in-memory queue server with RPC interface, supporting FIFO, LIFO and double-ended queues.
+Named after [Rube Goldberg machine](https://en.wikipedia.org/wiki/Rube_Goldberg_machine), `goldberg` is ridiculously over-engineered in-memory queue server with RPC interface, supporting FIFO, LIFO and double-ended queues.
 
 ### Motivation
 
-This is a hobby project made to refresh my memory on handling concurrency on golang. Not intended to pretty much anything practical.
+This is a hobby project made to refresh my memory on handling concurrency in Go. Not intended to pretty much anything practical.
 
 ## Usage
 
