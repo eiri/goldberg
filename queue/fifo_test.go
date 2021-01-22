@@ -1,15 +1,17 @@
-package main
+package queue_test
 
 import (
 	"testing"
+
+	gq "github.com/eiri/goldberg/queue"
 )
 
 func TestFIFO(t *testing.T) {
-	var q *FIFO
+	var q *gq.FIFO
 	var els = []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
 
 	t.Run("Create", func(t *testing.T) {
-		q = NewFIFO()
+		q = gq.NewFIFO()
 		if q == nil {
 			t.Fatal("Expected new queue, got nil")
 		}

@@ -4,7 +4,7 @@ PROJ := goldberg
 SRCS := $(shell find $(CURDIR) -name '*.go')
 
 $(PROJ): $(SRCS)
-	go build -o $(PROJ) ./...
+	go build -o $(PROJ) ./cmd/...
 
 .PHONY: run
 run: $(PROJ)

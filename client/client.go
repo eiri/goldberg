@@ -1,8 +1,10 @@
-package main
+package client
 
 import (
 	"log"
 	"net/rpc"
+
+	gh "github.com/eiri/goldberg/handler"
 )
 
 type Client struct {
@@ -13,7 +15,7 @@ func NewClient(port string) *Client {
 	return &Client{Addr: ":" + port}
 }
 
-func (c *Client) Do(cmd string) error {
+func (c *Client) Do(name, cmd string) error {
 	log.Printf("Connecting to %s", c.Addr)
 	client, err := rpc.Dial("tcp", c.Addr)
 	if err != nil {
@@ -21,9 +23,10 @@ func (c *Client) Do(cmd string) error {
 	}
 	defer client.Close()
 
-	log.Printf("-> %s", cmd)
-	resp := new(Response)
-	call := client.Go("queue.Execute", &Request{Item: cmd}, resp, nil)
+	log.Printf("-> %s %s", name, cmd)
+	resp := new(gh.Response)
+	req := &gh.Request{Name: name}
+	call := client.Go("goldberg.Create", req, resp, nil)
 	reply := <-call.Done
 	if reply.Error != nil {
 		return reply.Error

@@ -1,4 +1,4 @@
-package main
+package queue
 
 import (
 	"container/list"
@@ -24,4 +24,8 @@ func (fifo *FIFO) PopFront() interface{} {
 		return e.Value
 	}
 	return nil
+}
+
+func (fifo *FIFO) Len() int {
+	return fifo.List.Len()
 }
