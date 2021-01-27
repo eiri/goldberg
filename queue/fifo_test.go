@@ -8,7 +8,7 @@ import (
 
 func TestFIFO(t *testing.T) {
 	var q *gq.FIFO
-	var els = []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
+	var items = []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
 
 	t.Run("Create", func(t *testing.T) {
 		q = gq.NewFIFO()
@@ -18,8 +18,8 @@ func TestFIFO(t *testing.T) {
 	})
 
 	t.Run("Enqueue", func(t *testing.T) {
-		for i, el := range els {
-			q.PushBack(el)
+		for i, item := range items {
+			q.PushBack(item)
 			if q.Len() != i+1 {
 				t.Errorf("Expected queue size %d, got %d", i+1, q.Len())
 			}
@@ -27,16 +27,16 @@ func TestFIFO(t *testing.T) {
 	})
 
 	t.Run("Dequeue", func(t *testing.T) {
-		for i, el := range els {
+		for i, item := range items {
 			e := q.PopFront()
 			v, ok := e.(int)
 			if !ok {
 				t.Errorf("Expected element %v to be type int", e)
 			}
-			if v != el {
-				t.Errorf("Expected element %d, got %d", el, v)
+			if v != item {
+				t.Errorf("Expected element %d, got %d", item, v)
 			}
-			if q.Len() != 9-i {
+			if q.Len() != len(items)-i-1 {
 				t.Errorf("Expected q size %d, got %d", i, q.Len())
 			}
 		}
