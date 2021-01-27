@@ -25,10 +25,7 @@ func (s *Server) ListenAndServe() error {
 	if err != nil {
 		return err
 	}
-
-	defer func() {
-		listener.Close()
-	}()
+	defer listener.Close()
 
 	for {
 		conn, err := listener.Accept()
@@ -37,5 +34,4 @@ func (s *Server) ListenAndServe() error {
 		}
 		go s.ServeConn(conn)
 	}
-	return nil
 }
