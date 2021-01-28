@@ -17,11 +17,11 @@ type Response struct {
 }
 
 type Handler struct {
-	dispatch map[string]*gq.FIFO
+	dispatch map[string]gq.Queue
 }
 
 func New() *Handler {
-	return &Handler{dispatch: make(map[string]*gq.FIFO)}
+	return &Handler{dispatch: make(map[string]gq.Queue)}
 }
 
 func (h *Handler) Create(req Request, resp *Response) error {
